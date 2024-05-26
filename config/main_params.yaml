@@ -1,0 +1,4 @@
+main_node:
+  ros__parameters:
+    start: retry
+    team: blue
