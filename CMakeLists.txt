@@ -46,8 +46,11 @@ install(
   DIRECTORY config launch
   DESTINATION share/${PROJECT_NAME}
 )
+
+ament_python_install_package(${PROJECT_NAME})
+
 install(
-  PROGRAMS scripts/ball_check_node.py
+  PROGRAMS scripts/ball_check_node.py scripts/abu_teammode_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
