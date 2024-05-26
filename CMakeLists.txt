@@ -47,7 +47,7 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 install(
-  PROGRAMS scripts/AreaPub.py scripts/mega_interface.py scripts/Tsl_node.py scripts/detect_server.py scripts/main_node.py scripts/image_track.py
+  PROGRAMS scripts/ball_check_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

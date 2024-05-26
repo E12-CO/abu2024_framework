@@ -40,47 +40,23 @@ def generate_launch_description():
         parameters=[os.path.join(get_package_share_directory("mecanum_controller"), 'params', 'mecanum.yaml')]
     )
 
-    imu_instant = launch_ros.actions.Node(
-        package='mpu6050driver',
-        executable='mpu6050driver',
-        output='screen',
-        parameters=[os.path.join(get_package_share_directory("mpu6050driver"), 'params', 'mpu6050.yaml')]
-    )
-
-    mag_instant = launch_ros.actions.Node(
-        package='hmc5883ldriver',
-        executable='hmc5883ldriver',
-        output='screen'
-    )
-
-    madgwick_fusion = launch_ros.actions.Node(
-        package='imu_filter_madgwick',
-        executable='imu_filter_madgwick_node',
-        output='screen',
-        parameters=[os.path.join(get_package_share_directory("abu_framework"), 'config', 'imu_filter.yaml')]
-
-    )
-
-    ekf_fusion = launch_ros.actions.Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node',
-        output='screen',
-        parameters=[os.path.join(get_package_share_directory("abu_framework"), 'config', 'ekf_abu.yaml')]
-    )
-
-    delayed_ekf = launch.actions.TimerAction(period=3.0, actions=[madgwick_fusion, ekf_fusion])
-
-    rel_pos_instant = launch_ros.actions.Node(
-        package='rel_pos_commander',
-        executable='rel_pos_commander',
-        output='screen'
-    )
-
-    mega_instant = launch_ros.actions.Node(
+    ball_ckeck_instant = launch_ros.actions.Node(
         package='abu_framework',
-        executable='mega_interface.py',
+        executable='ball_check_node.py',
         output='screen'
+    )
+
+    nav_param_dir = launch.substitutions.LaunchConfiguration(
+        'nav_param_dir',
+        default=os.path.join(
+            get_package_share_directory('abu_nav'),
+            'params',
+            'abu_params.yaml'))
+
+    abu_nav_instat = launch_ros.actions.Node(
+        package='abu_nav',
+        execution='abu_nav_node',
+        parameters=[nav_param_dir]
     )
 
     return launch.LaunchDescription([
@@ -94,12 +70,13 @@ def generate_launch_description():
             default_value='default_team',
             description='The value for the "team" parameter'
         ),
+        DeclareLaunchArgument(
+            'nav_param_dir',
+            default_value=nav_param_dir,
+            description='Param for abu_nav node'),
+
         #node_robot_state_publisher,
         mecanum_controller_instant,
-	#imu_instant,
-	#mag_instant,
-	#delayed_ekf,
-        mega_instant,
-        rel_pos_instant,
+        ball_check_instant,
     ])
 
