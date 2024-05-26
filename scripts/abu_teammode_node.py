@@ -88,11 +88,6 @@ def main(args=None):
 	abu_teammode_node = abu_teammode()
 	abu_teammode_node.get_logger().info('Starting Button team mode selector node')
 
-
-	team = 'red'
-	mode = 'retry'
-	state = 2
-
 	while rclpy.ok():
 		#print(state)
 		if state == 2 and not running :  # Send out start/retry command
