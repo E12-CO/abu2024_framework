@@ -17,12 +17,11 @@ home = os.path.expanduser('~')
 def generate_launch_description():
 
      # Specify the name of the package and path to xacro file within the package
-    pkg_name = 'tlhx_bot'
     file_subpath = 'description/robot.urdf.xacro'
 
 
     # Use xacro to process the file
-    xacro_file = os.path.join(get_package_share_directory(pkg_name),file_subpath)
+    xacro_file = os.path.join(get_package_share_directory('tlhx_bot'),file_subpath)
     robot_description_raw = xacro.process_file(xacro_file).toxml()
 
     # Configure the node
@@ -62,13 +61,14 @@ def generate_launch_description():
     # abu_nav node launch
     abu_nav_instant = launch_ros.actions.Node(
         package='abu_nav',
-        execution='abu_nav_node',
+        executable='abu_nav_node',
         parameters=[nav_param_dir]
     )
 
     # ball_check_node launch
-    abu_ball_ckeck_instant = launch_ros.actions.Node(
+    abu_ballcheck_instant = launch_ros.actions.Node(
         package='abu_framework',
+        name='abu_ball_check_node',
         executable='ball_check_node.py',
         output='screen'
     )
@@ -93,6 +93,6 @@ def generate_launch_description():
         mecanum_controller_instant,
         abu_teammode_instant,
         abu_nav_instant,
-        abu_ball_check_instant,
+        abu_ballcheck_instant,
     ])
 
