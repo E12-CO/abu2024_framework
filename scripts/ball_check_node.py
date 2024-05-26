@@ -1,4 +1,5 @@
-# Working code
+#!/usr/bin/env python3
+
 import cv2
 import numpy as np
 import serial
@@ -9,10 +10,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String as StringMsg
 
-ser = serial.Serial(port='/dev/mega',
-                    baudrate=115200,
-                    timeout=0.03,
-                    write_timeout=0.03)
+
 left_top = (305,45)
 left_buttom = (305,430)
 right_buttom = (530,430)
@@ -85,6 +83,10 @@ def detect_and_draw_balls(frame):
 
 
 def main(args=None):
+	ser = serial.Serial(port='/dev/mega',
+	baudrate=115200,
+	timeout=0.03,
+	write_timeout=0.03)
 	state = 0
 	ser.write(b'E\n')
 	cap = cv2.VideoCapture('/dev/ballcheck')
