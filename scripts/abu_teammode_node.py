@@ -43,12 +43,12 @@ def button_callback(button_name):
 			print("Select: red team")
 			team = "red"
 			state = 1
-			sleep(1)
+			sleep(0.5)
 		elif button_name == 2:
 			print("Select: blue team")
 			team = "blue"
 			state = 1
-			sleep(1)
+			sleep(0.5)
 
 
 	# Stat 1, Select play mode
@@ -67,7 +67,8 @@ def button_callback(button_name):
 
 	# State 2, For stopping the robot and Jump to state 3
 	elif state == 2 :
-		state = 3
+		if button_name == 3 or button_name == 4:
+			state = 3
 
 def main(args=None):
 	global state, team, mode
@@ -89,7 +90,7 @@ def main(args=None):
 	abu_teammode_node.get_logger().info('Starting Button team mode selector node')
 
 	while rclpy.ok():
-		#print(state)
+		print(state)
 		if state == 2 and not running :  # Send out start/retry command
 			abu_teammode_node.publish_teammode(team, mode)
 			abu_teammode_node.get_logger().info('Got Team: '+team+' Mode: '+mode)
@@ -98,6 +99,7 @@ def main(args=None):
 		elif state == 3 and running: # Send out stop mode
 			abu_teammode_node.publish_teammode('stop', 'stop')
 			abu_teammode_node.get_logger().info('STOP robot !')
+			state = 0
 			running = False
 
 		rclpy.spin_once(abu_teammode_node, timeout_sec=0.1)  # Process ROS events
