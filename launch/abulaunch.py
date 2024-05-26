@@ -40,12 +40,18 @@ def generate_launch_description():
         parameters=[os.path.join(get_package_share_directory("mecanum_controller"), 'params', 'mecanum.yaml')]
     )
 
-    ball_ckeck_instant = launch_ros.actions.Node(
+
+    # ABU Nodes and executables
+
+    # Button Team Mode selector launch
+    abu_teammode_instant = launch_ros.actions.Node(
         package='abu_framework',
-        executable='ball_check_node.py',
-        output='screen'
+	name='abu_teammode_node',
+        executable='abu_teammode_node.py',
+	output='screen'
     )
 
+    # abu_nav node param
     nav_param_dir = launch.substitutions.LaunchConfiguration(
         'nav_param_dir',
         default=os.path.join(
@@ -53,10 +59,18 @@ def generate_launch_description():
             'params',
             'abu_params.yaml'))
 
-    abu_nav_instat = launch_ros.actions.Node(
+    # abu_nav node launch
+    abu_nav_instant = launch_ros.actions.Node(
         package='abu_nav',
         execution='abu_nav_node',
         parameters=[nav_param_dir]
+    )
+
+    # ball_check_node launch
+    abu_ball_ckeck_instant = launch_ros.actions.Node(
+        package='abu_framework',
+        executable='ball_check_node.py',
+        output='screen'
     )
 
     return launch.LaunchDescription([
@@ -77,6 +91,8 @@ def generate_launch_description():
 
         #node_robot_state_publisher,
         mecanum_controller_instant,
-        ball_check_instant,
+        abu_teammode_instant,
+        abu_nav_instant,
+        abu_ball_check_instant,
     ])
 
