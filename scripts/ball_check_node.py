@@ -97,7 +97,7 @@ def main(args=None):
 
 		if frame is not None :
 			frame_with_rectangles,flag = detect_and_draw_balls(frame[45:430,305:530])
-			print(state,flag)
+			#print(state,flag)
 
 			if ball_feed_node.start_flag == 2: # Enter stop mode
 				state = 20
@@ -139,7 +139,7 @@ def main(args=None):
 				ser.write(b'E\n')
 				state = 0 # Went back to idle
 
-			cv2.imshow('Check Ball In', frame_with_rectangles)
+#			cv2.imshow('Check Ball In', frame_with_rectangles)
 		
 		else: # Null frame
 			print('Null frame error, quiting...')

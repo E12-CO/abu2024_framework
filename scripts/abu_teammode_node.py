@@ -90,7 +90,7 @@ def main(args=None):
 	abu_teammode_node.get_logger().info('Starting Button team mode selector node')
 
 	while rclpy.ok():
-		print(state)
+		#print(state)
 		if state == 2 and not running :  # Send out start/retry command
 			abu_teammode_node.publish_teammode(team, mode)
 			abu_teammode_node.get_logger().info('Got Team: '+team+' Mode: '+mode)
