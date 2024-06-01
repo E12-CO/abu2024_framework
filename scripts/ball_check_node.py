@@ -22,6 +22,8 @@ class BallFeed(Node):
 	def __init__(self):
 		super().__init__('BallFeedNode')
 		self.start_flag = 0
+		self.have_ball = 'F'
+
 		self.sub_cmd = self.create_subscription(
 			StringMsg,
 			'ball_feed_cmd',
@@ -47,7 +49,7 @@ class BallFeed(Node):
 			
 			case 'out':# release ball
 				print('receive out command')
-				ser.write(b'O\n')
+				self.start_flag = 3
 				
 			case _:
 				self.start_flag = 0
@@ -61,8 +63,8 @@ def detect_and_draw_balls(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # HSV color tuning param 
-    lower_purple = np.array([105, 41, 76])
-    upper_purple = np.array([146, 93, 255])
+    lower_purple = np.array([105, 30, 0])
+    upper_purple = np.array([135, 88, 255])
 
     mask_purple = cv2.inRange(hsv, lower_purple, upper_purple)
 
@@ -96,8 +98,14 @@ def main(args=None):
 		ret, frame = cap.read()
 
 		if frame is not None :
-			frame_with_rectangles,flag = detect_and_draw_balls(frame[45:430,305:530])
+			frame_with_rectangles,flag = detect_and_draw_balls(frame[200:400,340:500])
+			#cv2.imshow("frame",frame[200:400,340:500])
+			#cv2.waitKey(1)
 			#print(state,flag)
+
+			if ball_feed_node.start_flag == 3: #Ballout
+				ball_feed_node.start_flag = 0
+				ser.write(b'O\n')
 
 			if ball_feed_node.start_flag == 2: # Enter stop mode
 				state = 20
@@ -113,9 +121,9 @@ def main(args=None):
 
 			elif state == 2: # Polling wait for ball   
 				ser.write(b'H\n')
-				message = ser.readline()
+				ball_feed_node.have_ball = ser.readline()
 				#print(message)
-				if message == b'T':
+				if ball_feed_node.have_ball == b'T':
 					state = 3
 
 			elif state == 3: # Accept or Reject ball
