@@ -22,8 +22,10 @@ class BallFeed(Node):
 	def __init__(self):
 		super().__init__('BallFeedNode')
 		self.start_flag = 0
+		self.icheck_flag = False
+		self.ocheck_flag = False
 		self.have_ball = 'F'
-
+		
 		self.sub_cmd = self.create_subscription(
 			StringMsg,
 			'ball_feed_cmd',
@@ -50,6 +52,14 @@ class BallFeed(Node):
 			case 'out':# release ball
 				print('receive out command')
 				self.start_flag = 3
+
+			case 'ichk': # Ball in check
+				print('receive in ball check')
+				self.icheck_flag = True
+
+			case 'ochk': # Ball out check
+				print('receive out ball check')
+				self.ocheck_flag = True
 				
 			case _:
 				self.start_flag = 0
@@ -106,6 +116,25 @@ def main(args=None):
 			if ball_feed_node.start_flag == 3: #Ballout
 				ball_feed_node.start_flag = 0
 				ser.write(b'O\n')
+
+			if ball_feed_node.icheck_flag == 1:
+				ball_feed_node.icheck_flag = 0
+				ser.write(b'H\n')
+				i_ball = ser.readline()
+				if i_ball == b'T':
+					ball_feed_node.publish_ball_ar('Yes')
+				else:
+					ball_feed_node.publish_ball_ar('No')
+
+			if ball_feed_node.ocheck_flag == 1:
+				ball_feed_node.ocheck_flag = 0
+				ser.write(b'I\n')
+				o_ball = ser.readline()
+				if o_ball == b'T':
+					ball_feed_node.publish_ball_ar('Yes')
+				else:
+					ball_feed_node.publish_ball_ar('No')
+
 
 			if ball_feed_node.start_flag == 2: # Enter stop mode
 				state = 20
