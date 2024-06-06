@@ -1,11 +1,22 @@
-joystick_relay:
+# Input topics handled/muxed.
+# For each topic:
+# - name    : name identifier to select the topic (*sub-namespace, see below)
+# - topic   : input topic of geometry_msgs::Twist type
+# - timeout : timeout in seconds to start discarding old messages, and use 0.0 speed instead
+# - priority: priority in the range [0, 255]; the higher the more priority over other topics
+
+twist_mux:
   ros__parameters:
-    priority: True
-    turbo:
-      linear_forward_min  : 0.5
-      linear_forward_max  : 1.0
-      linear_backward_min : 0.25
-      linear_backward_max : 0.5
-      angular_min : 0.7
-      angular_max : 1.2
-      steps       : 4
+    topics:
+      navigation:
+        topic   : cmd_vel_nav
+        timeout : 0.5
+        priority: 2
+      keyboard:
+        topic   : cmd_vel_kbd
+        timeout : 0.5
+        priority: 3
+      tablet:
+        topic   : cmd_vel_a3
+        timeout : 0.5
+        priority: 1

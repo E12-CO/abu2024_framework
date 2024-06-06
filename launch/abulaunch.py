@@ -73,6 +73,22 @@ def generate_launch_description():
         output='screen'
     )
 
+
+    mux_param_dir = launch.substitutions.LaunchConfiguration(
+        'mux_param_dir',
+        default=os.path.join(
+            get_package_share_directory('abu_framework'),
+            'config',
+            'twist_mux_abu.yaml'))
+
+    twist_mux_instant = launch_ros.actions.Node(
+        package='twist_mux',
+        executable='twist_mux',
+        output='screen',
+        remappings=[('/cmd_vel_out', '/cmd_vel')],
+        parameters=[mux_param_dir]
+    )
+
     return launch.LaunchDescription([
         DeclareLaunchArgument(
             'start_param',
@@ -88,11 +104,15 @@ def generate_launch_description():
             'nav_param_dir',
             default_value=nav_param_dir,
             description='Param for abu_nav node'),
-
+        DeclareLaunchArgument(
+            'mux_param_dir',
+            default_value=mux_param_dir,
+            description='twist mux param for abu'),
         #node_robot_state_publisher,
         mecanum_controller_instant,
         abu_teammode_instant,
         abu_nav_instant,
         abu_ballcheck_instant,
+	twist_mux_instant
     ])
 
